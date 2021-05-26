@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -19,8 +20,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
+Parser p = new Parser();
+
 Color cDark = Color(0xFF374352);
 Color cLight = Color(0xFFe6eeff);
+String answer = "";
+String expression = "";
 
 class Calculator extends StatefulWidget {
   @override
@@ -28,8 +33,6 @@ class Calculator extends StatefulWidget {
 }
 
 class _CalculatorState extends State<Calculator> {
-  String answer = "";
-  String expression = "";
   bool dMode = false;
   @override
   Widget build(BuildContext context) {
@@ -69,7 +72,7 @@ class _CalculatorState extends State<Calculator> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        '1',
+                        expression.length > 0 ? expression : '',
                         style: TextStyle(
                             fontSize: 55,
                             fontWeight: FontWeight.bold,
@@ -86,7 +89,7 @@ class _CalculatorState extends State<Calculator> {
                               color: dMode ? Colors.green : Colors.grey),
                         ),
                         Text(
-                          '1+2',
+                          answer.length > 0 ? answer : '0',
                           style: TextStyle(
                               fontSize: 20,
                               color: dMode ? Colors.green : Colors.grey),
@@ -184,54 +187,90 @@ class _CalculatorState extends State<Calculator> {
       IconData icon,
       Color iconColor,
       Color textColor}) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: NeuMorph(
-        dMode: dMode,
-        borderRadius: BorderRadius.circular(40),
-        padding: EdgeInsets.all(padding),
-        child: Container(
-          width: padding * 2,
-          height: padding * 2,
-          child: Center(
-              child: title != null
-                  ? Text(
-                      '$title',
-                      style: TextStyle(
-                          color: textColor != null
-                              ? textColor
-                              : dMode
-                                  ? Colors.white
-                                  : Colors.black,
-                          fontSize: 30),
-                    )
-                  : Icon(
-                      icon,
-                      color: iconColor,
-                      size: 30,
-                    )),
+    return GestureDetector(
+      onTap: () {
+        if (icon != null || title == null) {
+          setState(() {
+            answer = "21";
+          });
+        } else if (icon == null && title == 'C') {
+          setState(() {
+            answer = "";
+            expression = '';
+          });
+        } else if (title == '=') {
+          setState(() {
+            answer = expression;
+            try {
+              Expression exp = p.parse(expression);
+              expression = exp.evaluate(EvaluationType.REAL, null).toString();
+            } catch (e) {
+              setState(() {
+                answer = '';
+                expression = '';
+              });
+            }
+          });
+        } else if (icon == null || title != null || title.length > 0) {
+          setState(() {
+            expression += title;
+          });
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: NeuMorph(
+          dMode: dMode,
+          borderRadius: BorderRadius.circular(40),
+          padding: EdgeInsets.all(padding),
+          child: Container(
+            width: padding * 2,
+            height: padding * 2,
+            child: Center(
+                child: title != null
+                    ? Text(
+                        '$title',
+                        style: TextStyle(
+                            color: textColor != null
+                                ? textColor
+                                : dMode
+                                    ? Colors.white
+                                    : Colors.black,
+                            fontSize: 30),
+                      )
+                    : Icon(
+                        icon,
+                        color: iconColor,
+                        size: 30,
+                      )),
+          ),
         ),
       ),
     );
   }
 
   Widget _buttonTopSet({String title, double padding = 17}) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: NeuMorph(
-        dMode: dMode,
-        borderRadius: BorderRadius.circular(50),
-        padding:
-            EdgeInsets.symmetric(horizontal: padding, vertical: padding / 2),
-        child: Container(
-          width: padding * 2,
-          child: Center(
-            child: Text(
-              '$title',
-              style: TextStyle(
-                  color: dMode ? Colors.white : Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () {
+        print(title);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: NeuMorph(
+          dMode: dMode,
+          borderRadius: BorderRadius.circular(50),
+          padding:
+              EdgeInsets.symmetric(horizontal: padding, vertical: padding / 2),
+          child: Container(
+            width: padding * 2,
+            child: Center(
+              child: Text(
+                '$title',
+                style: TextStyle(
+                    color: dMode ? Colors.white : Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         ),
