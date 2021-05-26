@@ -14,25 +14,37 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Calculator',
-      home: CalculatorNeuApp(),
+      home: Calculator(),
     );
   }
 }
 
-const Color colorDark = Color(0xFF374352);
-const Color colorLight = Color(0xFFe6eeff);
+const Color cDark = Color(0xFF374352);
+const Color cLight = Color(0xFFe6eeff);
 
-class CalculatorNeuApp extends StatefulWidget {
+class Calculator extends StatefulWidget {
   @override
-  _CalculatorNeuAppState createState() => _CalculatorNeuAppState();
+  _CalculatorState createState() => _CalculatorState();
 }
 
-class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
+class _CalculatorState extends State<Calculator> {
   bool dMode = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: dMode ? colorDark : colorLight,
+      appBar: AppBar(
+        backgroundColor: dMode ? cDark : cLight,
+        elevation: 0,
+        leading: GestureDetector(
+          onTap: () {
+            setState(() {
+              dMode ? dMode = false : dMode = true;
+            });
+          },
+          child: _switchMode(),
+        ),
+      ),
+      backgroundColor: dMode ? cDark : cLight,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(18),
@@ -43,15 +55,15 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          dMode ? dMode = false : dMode = true;
-                        });
-                      },
-                      child: _switchMode(),
-                    ),
-                    SizedBox(height: 80),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     setState(() {
+                    //       dMode ? dMode = false : dMode = true;
+                    //     });
+                    //   },
+                    //   child: _switchMode(),
+                    // ),
+                    // SizedBox(height: 80),
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
@@ -106,7 +118,7 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
                       _buildButtonRounded(title: ')'),
                       _buildButtonRounded(
                           title: '/',
-                          textColor: dMode ? Colors.green : Colors.redAccent)
+                          textColor: Color.fromRGBO(66, 133, 244, 1))
                     ],
                   ),
                   Row(
@@ -117,7 +129,7 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
                       _buildButtonRounded(title: '9'),
                       _buildButtonRounded(
                           title: 'x',
-                          textColor: dMode ? Colors.green : Colors.redAccent)
+                          textColor: Color.fromRGBO(66, 133, 244, 1))
                     ],
                   ),
                   Row(
@@ -128,7 +140,7 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
                       _buildButtonRounded(title: '6'),
                       _buildButtonRounded(
                           title: '-',
-                          textColor: dMode ? Colors.green : Colors.redAccent)
+                          textColor: Color.fromRGBO(66, 133, 244, 1))
                     ],
                   ),
                   Row(
@@ -139,7 +151,7 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
                       _buildButtonRounded(title: '3'),
                       _buildButtonRounded(
                           title: '+',
-                          textColor: dMode ? Colors.green : Colors.redAccent)
+                          textColor: Color.fromRGBO(66, 133, 244, 1))
                     ],
                   ),
                   Row(
@@ -149,7 +161,7 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
                       _buildButtonRounded(title: ','),
                       _buildButtonRounded(
                           icon: Icons.backspace_outlined,
-                          iconColor: dMode ? Colors.green : Colors.redAccent),
+                          iconColor: Colors.redAccent),
                       _buildButtonRounded(
                           title: '=',
                           textColor: dMode ? Colors.green : Colors.redAccent)
@@ -172,7 +184,7 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
       Color textColor}) {
     return Padding(
       padding: const EdgeInsets.all(8),
-      child: NeuContainer(
+      child: NeuMorph(
         dMode: dMode,
         borderRadius: BorderRadius.circular(40),
         padding: EdgeInsets.all(padding),
@@ -204,7 +216,7 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
   Widget _buttonTopSet({String title, double padding = 17}) {
     return Padding(
       padding: const EdgeInsets.all(10),
-      child: NeuContainer(
+      child: NeuMorph(
         dMode: dMode,
         borderRadius: BorderRadius.circular(50),
         padding:
@@ -226,40 +238,30 @@ class _CalculatorNeuAppState extends State<CalculatorNeuApp> {
   }
 
   Widget _switchMode() {
-    return NeuContainer(
-      dMode: dMode,
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      borderRadius: BorderRadius.circular(40),
-      child: Container(
-        width: 70,
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Icon(
-            Icons.wb_sunny,
-            color: dMode ? Colors.grey : Colors.redAccent,
-          ),
-          Icon(
-            Icons.nightlight_round,
-            color: dMode ? Colors.green : Colors.grey,
-          ),
-        ]),
-      ),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      width: 50,
+      child: Row(children: [
+        Icon(
+          dMode ? Icons.nightlight_round : Icons.wb_sunny,
+          color: dMode ? Colors.grey : Colors.redAccent,
+        ),
+      ]),
     );
   }
 }
 
-class NeuContainer extends StatefulWidget {
+class NeuMorph extends StatefulWidget {
   final bool dMode;
   final Widget child;
   final BorderRadius borderRadius;
   final EdgeInsetsGeometry padding;
-  NeuContainer(
-      {this.dMode = false, this.child, this.borderRadius, this.padding});
+  NeuMorph({this.dMode = false, this.child, this.borderRadius, this.padding});
   @override
-  _NeuContainerState createState() => _NeuContainerState();
+  _NeuMorphState createState() => _NeuMorphState();
 }
 
-class _NeuContainerState extends State<NeuContainer> {
+class _NeuMorphState extends State<NeuMorph> {
   bool _isPressed = false;
 
   void _onPointerDown(PointerDownEvent event) {
@@ -283,7 +285,7 @@ class _NeuContainerState extends State<NeuContainer> {
       child: Container(
         padding: widget.padding,
         decoration: BoxDecoration(
-            color: dMode ? colorDark : colorLight,
+            color: dMode ? cDark : cLight,
             borderRadius: widget.borderRadius,
             boxShadow: _isPressed
                 ? null
