@@ -1,6 +1,11 @@
-# calculater
+# Calculater_FlutterUI
 
-A new Flutter project.
+A Flutter template.
+
+
+## Application UI
+<img src="assets/ss.png" />
+
 
 ## Getting Started
 
