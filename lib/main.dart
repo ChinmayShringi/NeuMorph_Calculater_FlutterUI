@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-const Color cDark = Color(0xFF374352);
-const Color cLight = Color(0xFFe6eeff);
+Color cDark = Color(0xFF374352);
+Color cLight = Color(0xFFe6eeff);
 
 class Calculator extends StatefulWidget {
   @override
@@ -28,6 +28,8 @@ class Calculator extends StatefulWidget {
 }
 
 class _CalculatorState extends State<Calculator> {
+  String answer = "";
+  String expression = "";
   bool dMode = false;
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class _CalculatorState extends State<Calculator> {
               dMode ? dMode = false : dMode = true;
             });
           },
-          child: _switchMode(),
+          child: _buildAppSwitch(),
         ),
       ),
       backgroundColor: dMode ? cDark : cLight,
@@ -61,7 +63,7 @@ class _CalculatorState extends State<Calculator> {
                     //       dMode ? dMode = false : dMode = true;
                     //     });
                     //   },
-                    //   child: _switchMode(),
+                    //   child: _buildAppSwitch(),
                     // ),
                     // SizedBox(height: 80),
                     Align(
@@ -237,7 +239,7 @@ class _CalculatorState extends State<Calculator> {
     );
   }
 
-  Widget _switchMode() {
+  Widget _buildAppSwitch() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       width: 50,
